@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.udacity.stockhawk.R;
@@ -20,8 +21,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
-
+class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder>
+{
     private final Context context;
     private final DecimalFormat dollarFormatWithPlus;
     private final DecimalFormat dollarFormat;
@@ -29,7 +30,8 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
     private Cursor cursor;
     private final StockAdapterOnClickHandler clickHandler;
 
-    StockAdapter(Context context, StockAdapterOnClickHandler clickHandler) {
+    StockAdapter(Context context, StockAdapterOnClickHandler clickHandler)
+    {
         this.context = context;
         this.clickHandler = clickHandler;
 
@@ -89,8 +91,6 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
         } else {
             holder.change.setText(percentage);
         }
-
-
     }
 
     @Override
@@ -132,7 +132,5 @@ class StockAdapter extends RecyclerView.Adapter<StockAdapter.StockViewHolder> {
             clickHandler.onClick(cursor.getString(symbolColumn));
 
         }
-
-
     }
 }

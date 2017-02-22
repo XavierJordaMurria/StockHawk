@@ -160,12 +160,15 @@ public class StockProvider extends ContentProvider {
 
         final SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        switch (uriMatcher.match(uri)) {
+        switch (uriMatcher.match(uri))
+        {
             case QUOTE:
                 db.beginTransaction();
                 int returnCount = 0;
-                try {
-                    for (ContentValues value : values) {
+                try
+                {
+                    for (ContentValues value : values)
+                    {
                         db.insert(
                                 Contract.Quote.TABLE_NAME,
                                 null,
@@ -173,12 +176,14 @@ public class StockProvider extends ContentProvider {
                         );
                     }
                     db.setTransactionSuccessful();
-                } finally {
+                } finally
+                {
                     db.endTransaction();
                 }
 
                 Context context = getContext();
-                if (context != null) {
+                if (context != null)
+                {
                     context.getContentResolver().notifyChange(uri, null);
                 }
 
@@ -186,7 +191,5 @@ public class StockProvider extends ContentProvider {
             default:
                 return super.bulkInsert(uri, values);
         }
-
-
     }
 }

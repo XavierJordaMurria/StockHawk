@@ -1,6 +1,7 @@
 package com.udacity.stockhawk.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -30,7 +31,8 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
         SwipeRefreshLayout.OnRefreshListener,
-        StockAdapter.StockAdapterOnClickHandler {
+        StockAdapter.StockAdapterOnClickHandler
+{
 
     private static final int STOCK_LOADER = 0;
     @SuppressWarnings("WeakerAccess")
@@ -45,8 +47,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private StockAdapter adapter;
 
     @Override
-    public void onClick(String symbol) {
+    public void onClick(String symbol)
+    {
         Timber.d("Symbol clicked: %s", symbol);
+        // Second button's interaction: start an activity and send a message to it.
+        Intent intent = StockDetails.newStartIntent(this, symbol);
+        startActivity(intent);
     }
 
     @Override
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         adapter = new StockAdapter(this, this);
         stockRecyclerView.setAdapter(adapter);
+
         stockRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         swipeRefreshLayout.setOnRefreshListener(this);
@@ -80,11 +87,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
             }
         }).attachToRecyclerView(stockRecyclerView);
-
-
     }
 
-    private boolean networkUp() {
+    private boolean networkUp()
+    {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -92,27 +98,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onRefresh() {
-
+    public void onRefresh()
+    {
         QuoteSyncJob.syncImmediately(this);
 
-        if (!networkUp() && adapter.getItemCount() == 0) {
+        if (!networkUp() && adapter.getItemCount() == 0)
+        {
             swipeRefreshLayout.setRefreshing(false);
             error.setText(getString(R.string.error_no_network));
             error.setVisibility(View.VISIBLE);
-        } else if (!networkUp()) {
+        }
+        else if (!networkUp())
+        {
             swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(this, R.string.toast_no_connectivity, Toast.LENGTH_LONG).show();
-        } else if (PrefUtils.getStocks(this).size() == 0) {
+        }
+        else if (PrefUtils.getStocks(this).size() == 0)
+        {
             swipeRefreshLayout.setRefreshing(false);
             error.setText(getString(R.string.error_no_stocks));
             error.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else
+        {
             error.setVisibility(View.GONE);
         }
     }
 
-    public void button(@SuppressWarnings("UnusedParameters") View view) {
+    public void button(@SuppressWarnings("UnusedParameters") View view)
+    {
         new AddStockDialog().show(getFragmentManager(), "StockDialogFragment");
     }
 
@@ -132,7 +146,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args)
+    {
         return new CursorLoader(this,
                 Contract.Quote.URI,
                 Contract.Quote.QUOTE_COLUMNS.toArray(new String[]{}),
@@ -140,12 +155,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data)
+    {
         swipeRefreshLayout.setRefreshing(false);
 
-        if (data.getCount() != 0) {
+        if (data.getCount() != 0)
+        {
             error.setVisibility(View.GONE);
         }
+        
         adapter.setCursor(data);
     }
 
