@@ -18,7 +18,9 @@ import com.google.common.base.Strings;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by xj1 on 20/02/2017.
@@ -82,25 +84,24 @@ public class StockDetails extends Activity
 
             String[] splitArr = tmp1.split("\n");
 
+            ArrayList<String> labels = new ArrayList<String>();
+
+            int index = 0;
             for(String pair : splitArr)
             {
-                entries.add(new Entry(Float.valueOf(pair.split(", ")[0]), Float.valueOf(pair.split(", ")[1])));
+//                getDate(Long.valueOf(pair.split(", ")[1]), "dd/MM/yyyy hh:mm:ss.SSS")
+//                entries.add(new Entry(Float.valueOf(pair.split(", ")[0]), Long.valueOf(pair.split(", ")[1])));
+                entries.add(new Entry(Float.valueOf(pair.split(", ")[1]), index));
+                labels.add(getDate(Long.valueOf(pair.split(", ")[0]), "dd/MM/yyyy hh:mm"));
+                index++;
             }
 
             LineDataSet dataset = new LineDataSet(entries, "# of Calls");
 
-            ArrayList<String> labels = new ArrayList<String>();
-            labels.add("January");
-            labels.add("February");
-            labels.add("March");
-            labels.add("April");
-            labels.add("May");
-            labels.add("June");
-
-            LineData data = new LineData(dataset);
-            dataset.setColors(ColorTemplate.COLORFUL_COLORS); //
-//            dataset.setDrawCubic(true);
-            dataset.setDrawFilled(true);
+            LineData data = new LineData(labels, dataset);
+            dataset.setColors(ColorTemplate.COLORFUL_COLORS);
+            dataset.setDrawCubic(false);
+            dataset.setDrawFilled(false);
 
             lineChart.setData(data);
             lineChart.animateY(5000);
@@ -108,5 +109,22 @@ public class StockDetails extends Activity
 
 
         return cursor;
+    }
+
+    /**
+     * Return date in specified format.
+     * @param milliSeconds Date in milliseconds
+     * @param dateFormat Date format
+     * @return String representing date in specified format
+     */
+    public static String getDate(long milliSeconds, String dateFormat)
+    {
+        // Create a DateFormatter object for displaying date in specified format.
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+
+        // Create a calendar object that will convert the date and time value in milliseconds to date.
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 }
