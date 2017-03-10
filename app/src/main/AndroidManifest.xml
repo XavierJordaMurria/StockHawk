@@ -32,7 +32,12 @@
         <provider
             android:name=".data.StockProvider"
             android:authorities="com.udacity.stockhawk"
-            android:exported="false" />
+            android:readPermission="com.udacity.stockhawk.DB_READ"
+            android:writePermission="com.udacity.stockhawk.DB_WRITE"
+            android:enabled="true"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+        </provider>
 
         <service
             android:name=".sync.QuoteJobService"
@@ -40,16 +45,25 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
 
-        <receiver android:name="MyWidgetProvider" >
-            <intent-filter >
+        <receiver
+            android:exported="false"
+            android:name="com.udacity.stockhawk.widget.WidgetProvider"
+            android:icon="@drawable/ic_dollar"
+            android:label="@string/app_name" >
+            <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.udacity.stockhawk.ACTION_DATA_UPDATED" />
+                <action android:name="com.appwidget.list.UPDATE_LIST" />
+                <action android:name="com.udacity.stockhawk.ACTION_DATA_UPDATED"/>
             </intent-filter>
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/widget_info" />
+                android:resource="@xml/widget_provider" />
         </receiver>
+
+        <service
+            android:name="com.udacity.stockhawk.widget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>

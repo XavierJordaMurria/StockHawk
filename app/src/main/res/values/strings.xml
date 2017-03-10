@@ -36,5 +36,7 @@
     <string name="swipe_to_refresh_result">Swipe to refresh result</string>
     <string name="click_to_add_new_stock_value">Click to add new stock value.</string>
     <string name="click_to_change_the_currency">Click to change the currency.</string>
+    <string name="empty_string">empty String</string>
+    <string name="update_list">update list</string>
 
 </resources>
