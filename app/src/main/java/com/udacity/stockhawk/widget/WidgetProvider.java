@@ -12,8 +12,9 @@ import android.widget.RemoteViews;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.ui.MainActivity;
 
-public class WidgetProvider extends AppWidgetProvider {
-	public static String EXTRA_WORD = "WORD";
+public class WidgetProvider extends AppWidgetProvider
+{
+	public static String LIST_ITEM_ACTION_CLICKED = "LIST_ITEM_ACTION_CLICKED";
 	public static String UPDATE_LIST = "com.appwidget.list.UPDATE_LIST";
 
 	@Override
@@ -36,9 +37,9 @@ public class WidgetProvider extends AppWidgetProvider {
 			widget.setPendingIntentTemplate(R.id.words, clickPI);
 			
 			
-			clickIntent = new Intent(context, WidgetProvider.class);
-			clickIntent.setAction(UPDATE_LIST);
-            PendingIntent pendingIntentRefresh = PendingIntent.getBroadcast(context,0, clickIntent, 0);
+			Intent updateBTNIntent= new Intent(context, WidgetProvider.class);
+			updateBTNIntent.setAction(UPDATE_LIST);
+            PendingIntent pendingIntentRefresh = PendingIntent.getBroadcast(context,0, updateBTNIntent, 0);
             widget.setOnClickPendingIntent(R.id.update_list, pendingIntentRefresh);
             
 			appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
@@ -57,7 +58,7 @@ public class WidgetProvider extends AppWidgetProvider {
 			updateWidget(context);
 		}
 
-		Log.e("onReceive", "onReceive");
+		Log.d("WidgetProvider", "onReceive");
 	}
 	
 	private void updateWidget(Context context)

@@ -17,10 +17,13 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.common.base.Strings;
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.widget.WidgetProvider;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import butterknife.BindView;
 
 /**
  * Created by xj1 on 20/02/2017.
@@ -30,8 +33,13 @@ public class StockDetails extends Activity
 {
     // The name of the extra data sent through an {@link Intent}.
     public final static String KEY_EXTRA_MESSAGE = "com.stockhawk.MESSAGE";
+    public static String EXTRA_POSITION = "com.stockhawk.ROW_POSITION";
+    private final static String TAG = "StockDetails";
+
     private ArrayList<Entry> entries = new ArrayList<>();
     private LineChart lineChart;
+
+    private TextView mSymbolTxt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,11 +50,15 @@ public class StockDetails extends Activity
 
         // Get the message from the Intent.
         Intent intent = getIntent();
-        String message = Strings.nullToEmpty(intent.getStringExtra(KEY_EXTRA_MESSAGE));
+        String message = intent.getStringExtra(KEY_EXTRA_MESSAGE);
+        int listPosition = intent.getIntExtra(EXTRA_POSITION,0);
 
+        Log.d(TAG, "onCreate with listPostion = " + listPosition + " and Message = " + message);
+        mSymbolTxt = (TextView) findViewById(R.id.symbol_txt);
+        mSymbolTxt.setText(message);
         lineChart = (LineChart) findViewById(R.id.chart);
         // Show message.
-        getCursorAtPosition(1);
+        getCursorAtPosition(listPosition);
     }
 
     /**
@@ -55,10 +67,11 @@ public class StockDetails extends Activity
      * @param message a {@link String} with text to be displayed
      * @return an {@link Intent} used to start {@link StockDetails}
      */
-    static protected Intent newStartIntent(Context context, String message)
+    static protected Intent newStartIntent(Context context, String message, int listPosition)
     {
         Intent newIntent = new Intent(context, StockDetails.class);
         newIntent.putExtra(KEY_EXTRA_MESSAGE, message);
+        newIntent.putExtra(EXTRA_POSITION, listPosition);
         return newIntent;
     }
 

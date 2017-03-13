@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import com.udacity.stockhawk.sync.QuoteSyncJob;
+import com.udacity.stockhawk.widget.WidgetProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,16 +49,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private StockAdapter adapter;
 
     @Override
-    public void onClick(String symbol)
+    public void onClick(String symbol, int position)
     {
-        Timber.d("Symbol clicked: %s", symbol);
+        Log.d("MainActivity","onClick Symbol clicked:"+ symbol + " position:" + position);
         // Second button's interaction: start an activity and send a message to it.
-        Intent intent = StockDetails.newStartIntent(this, symbol);
+        Intent intent = StockDetails.newStartIntent(this, symbol, position);
         startActivity(intent);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -74,19 +77,35 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         QuoteSyncJob.initialize(this);
         getSupportLoaderManager().initLoader(STOCK_LOADER, null, this);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT)
+        {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
                 return false;
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
+            {
                 String symbol = adapter.getSymbolAtPosition(viewHolder.getAdapterPosition());
                 PrefUtils.removeStock(MainActivity.this, symbol);
                 getContentResolver().delete(Contract.Quote.makeUriForStock(symbol), null, null);
             }
         }).attachToRecyclerView(stockRecyclerView);
+
+        Intent openingIntent =  getIntent();
+
+        if(openingIntent != null && openingIntent.getAction().equals(WidgetProvider.LIST_ITEM_ACTION_CLICKED))
+        {
+            int listPosition = getIntent().getIntExtra(StockDetails.EXTRA_POSITION, 0);
+            String symbol = getIntent().getStringExtra(StockDetails.KEY_EXTRA_MESSAGE);
+            Intent intent = new Intent(this, StockDetails.class);
+            intent.putExtra(StockDetails.EXTRA_POSITION, listPosition);
+            intent.putExtra(StockDetails.KEY_EXTRA_MESSAGE, symbol);
+            startActivity(intent);
+
+        }
     }
 
     private boolean networkUp()

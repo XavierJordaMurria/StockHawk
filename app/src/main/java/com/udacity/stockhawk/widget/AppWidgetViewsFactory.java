@@ -14,6 +14,7 @@ import android.widget.RemoteViewsService;
 
 import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
+import com.udacity.stockhawk.ui.StockDetails;
 
 public class AppWidgetViewsFactory implements RemoteViewsService.RemoteViewsFactory
 {
@@ -69,11 +70,11 @@ public class AppWidgetViewsFactory implements RemoteViewsService.RemoteViewsFact
 		String tmpItemStr = arrayList.get(position).mSymbol + ": $" + arrayList.get(position).mPrice;
 		row.setTextViewText(android.R.id.text1, tmpItemStr);
 
+		Log.w("AppWidgetViewsFactory", "getViewAt with position: " + position + " and " + arrayList.get(position).mSymbol);
 		Intent i = new Intent();
-		Bundle extras = new Bundle();
-
-		extras.putString(WidgetProvider.EXTRA_WORD, tmpItemStr);
-		i.putExtras(extras);
+		i.putExtra(StockDetails.KEY_EXTRA_MESSAGE, arrayList.get(position).mSymbol);
+		i.putExtra(StockDetails.EXTRA_POSITION, position);
+		i.setAction(WidgetProvider.LIST_ITEM_ACTION_CLICKED);
 		row.setOnClickFillInIntent(android.R.id.text1, i);
 
 		return row;
