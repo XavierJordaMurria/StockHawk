@@ -17,6 +17,7 @@
         android:id="@+id/update_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/update_list"
         android:text="@string/update_list"/>
 
 </LinearLayout>

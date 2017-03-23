@@ -54,9 +54,7 @@ public class WidgetProvider extends AppWidgetProvider
 		super.onReceive(context, intent);
 
 		if(intent.getAction().equalsIgnoreCase(UPDATE_LIST))
-		{
 			updateWidget(context);
-		}
 
 		Log.d("WidgetProvider", "onReceive");
 	}

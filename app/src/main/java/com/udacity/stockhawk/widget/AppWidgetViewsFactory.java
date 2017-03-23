@@ -37,15 +37,11 @@ public class AppWidgetViewsFactory implements RemoteViewsService.RemoteViewsFact
 	public AppWidgetViewsFactory(Context ctxt, Intent intent)
 	{
 		this.context = ctxt;
-		/*appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-				AppWidgetManager.INVALID_APPWIDGET_ID);
-		Log.e(getClass().getSimpleName(), appWidgetId + "");*/
 	}
 
 	@Override
 	public void onCreate()
 	{
-//		arrayList.add("1");
 		getDataFromDB();
 	}
 
@@ -53,7 +49,6 @@ public class AppWidgetViewsFactory implements RemoteViewsService.RemoteViewsFact
 	@Override
 	public void onDestroy()
 	{
-		// no-op
 	}
 
 	@Override
@@ -147,7 +142,6 @@ public class AppWidgetViewsFactory implements RemoteViewsService.RemoteViewsFact
 				cursor.moveToNext();
 			}
 		}
-
 			// always close the cursor
 			cursor.close();
 	}
